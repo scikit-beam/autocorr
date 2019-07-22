@@ -26,14 +26,15 @@ def autocorrelate(signal, lag_times=16, normalization='default'):
 
     TODO: add sanity checks
     """
-    a = np.array(signal, copy=True)
+    even = lambda x : x if x % 2 == 0 else x - 1
+    N = even(signal.shape[0])
+    a = np.array(signal[:N], copy=True)
     m = lag_times
-    N = a.shape[0]
 
     # calculate levels
     levels = np.int_(np.log2(N/m)) + 1
-    lenG = (levels + 1) * (m //2)
-    g2 = np.zeros(lenG, dtype=np.float32)
+    dims = ((levels + 1) * (m //2), *a.shape[1:])
+    g2 = np.zeros(dims, dtype=np.float32)
     tau = np.zeros_like(g2)
 
     # zero level
@@ -47,8 +48,7 @@ def autocorrelate(signal, lag_times=16, normalization='default'):
         else:
             g2[i] = np.mean(a[:N-i] * a[i:], axis=0) /t1/t2
     a  = (a[:N:2] + a[1:N:2])/2
-    N  //= 2
-    if N % 2: N -= 1
+    N  = even(N//2)
 
     for level in range(1, levels):
         delta_t *= 2
@@ -63,8 +63,7 @@ def autocorrelate(signal, lag_times=16, normalization='default'):
             else:
                 g2[idx] = np.mean(a[:-shift] * a[shift:], axis=0)/t1/t2
         a  = (a[:N:2] + a[1:N:2])/2
-        N //= 2
-        if N % 2: N -= 1
+        N = even(N//2)
         if N < lag_times: break 
 
     return g2, tau
