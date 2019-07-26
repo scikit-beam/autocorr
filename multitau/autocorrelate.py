@@ -34,7 +34,11 @@ def autocorrelate(signal, lag_times=16, normalization='default',
     # if N is add subtract 1
     even = lambda x : x if x % 2 == 0 else x - 1
 
-    # prep signal array
+    # 1-D data hack
+    if len(signal.shape) == 1:
+        signal = signal[:,np.newaxis, np.newaxis]
+
+    #  sizes
     N = even(signal.shape[0])
     m = lag_times
 
