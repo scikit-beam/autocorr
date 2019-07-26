@@ -34,9 +34,12 @@ py::tuple autocorrelate(py::array_t<double, py::array::c_style | py::array::forc
 
         /* get sizes of from the correlator objest */
         size_t len = corr.length();
+        std::vector<ssize_t> shape;
+        shape.push_back(nrow);
+        shape.push_back(len);
         
 		/* allocate the buffers for result */
-		auto G2  = py::array_t<double>(nrow * len);
+		auto G2  = py::array_t<double>(shape);
 		auto Tau = py::array_t<double>(len);
 
         /* get data-pointers */

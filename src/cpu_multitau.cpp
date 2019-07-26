@@ -25,7 +25,7 @@ void MultiTauAutocorrelator::reduceInplace(){
     for (unsigned j = 0; j < nrows_; j++){
         unsigned row_id = j * ncols_;
         for (unsigned i = 0; i < ntime_; i++)
-            signal_[j * ntime_ + i] = 0.5 * (signal_[row_id + 2*i] + signal_[row_id + 2*i + 1]);
+            signal_[row_id + i] = 0.5 * (signal_[row_id + 2*i] + signal_[row_id + 2*i + 1]);
     }
 }
 
@@ -66,10 +66,12 @@ void MultiTauAutocorrelator::process(unsigned tpl, double dt) {
     if (ntime_ % 2) ntime_--;
     // reduce data by averaging adjecent neighbours
     reduceInplace();
-    
-    /* process rest of the levels successively with :
+
+    /* 
+     * process rest of the levels successively with :
      * twice the time-step, and
-     * reduced signal successively.  */ 
+     * reduced signal successively.  
+     * */ 
     while ( ntime_ >= tpl ) {
 
         dt *= 2;
