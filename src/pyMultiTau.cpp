@@ -8,11 +8,11 @@
 namespace py = pybind11;
 
 #ifdef HAVE_CUDA
-extern void cudft(unsigned, float *,  unsigned, float *, complex_t *);
+extern void cudft(unsigned, double *,  unsigned, double *, complex_t *);
 #endif // HAVE_CUDA
 
 
-py::tuple autocorrelate(py::array_t<float, py::array::c_style | py::array::forcecast> Signal,
+py::tuple autocorrelate(py::array_t<double, py::array::c_style | py::array::forcecast> Signal,
 				 int m) {
 
         unsigned nrow = 1, ntimes =0;
@@ -26,7 +26,7 @@ py::tuple autocorrelate(py::array_t<float, py::array::c_style | py::array::force
 			throw std::runtime_error("Input signal must be a 1-D or a 2-D numpy array");
 
 		/* get pointer to encapsulated data */
-		float * signal = (float *) Signal.request().ptr;
+		double * signal = (double *) Signal.request().ptr;
 
         /* compute the autocorrelations */
         MultiTauAutocorrelator corr(signal, nrow, ntimes);
@@ -36,16 +36,16 @@ py::tuple autocorrelate(py::array_t<float, py::array::c_style | py::array::force
         size_t len = corr.length();
         
 		/* allocate the buffers for result */
-		auto G2  = py::array_t<float>(nrow * len);
-		auto Tau = py::array_t<float>(len);
+		auto G2  = py::array_t<double>(nrow * len);
+		auto Tau = py::array_t<double>(len);
 
         /* get data-pointers */
-		float * g2 = (float *) G2.request().ptr;
-        float * tau = (float *) Tau.request().ptr;
+		double * g2 = (double *) G2.request().ptr;
+        double * tau = (double *) Tau.request().ptr;
 
         /* copy data */
-        std::memcpy(g2, corr.g2(), sizeof(float) * len * nrow);
-        std::memcpy(tau, corr.tau(), sizeof(float) * len);
+        std::memcpy(g2, corr.g2(), sizeof(double) * len * nrow);
+        std::memcpy(tau, corr.tau(), sizeof(double) * len);
 
         py::tuple result(2);
         result[0] = G2;
