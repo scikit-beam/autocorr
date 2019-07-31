@@ -1,4 +1,5 @@
 import os
+import sys
 import subprocess
 from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext
@@ -6,7 +7,7 @@ from setuptools.command.build_ext import build_ext
 class CMakeExtension(Extension):
     def __init__(self, name, sourcedir=''):
         Extension.__init__(self, name, sources=[])
-        self.src_dir = os.path.abspath(sourcedir)
+        self.sourcedir = os.path.abspath(sourcedir)
 
 class CMakeBuild(build_ext):
     def run(self):
@@ -47,6 +48,6 @@ setup(
     keywords = 'synchrotron xpcs',
     install_requires = [ 'pybind11' ],
     ext_modules = [ CMakeExtension('multitau.cMultitau', 'src') ],
-    cmdlass = dict(build_ext = CMakeBuild),
+    cmdclass = dict(build_ext = CMakeBuild),
     packages = [ 'multitau' ]
 )

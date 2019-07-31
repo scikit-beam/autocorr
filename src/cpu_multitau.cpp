@@ -33,7 +33,7 @@ void MultiTauAutocorrelator::reduceInplace(){
 void MultiTauAutocorrelator::run_level(unsigned ntaus) {
     int m = idx_ ? 1 : 0;
 
-#pragma omp parallel for
+#pragma omp parallel for collapse(2)
     for (unsigned j = 0; j < nrows_; j++) {
         for (unsigned tau = 0; tau < ntaus; tau++) {
             double t1 = 0, t2 = 0, t3 =0;
