@@ -2,34 +2,25 @@
 
 import numpy as np
 
-def autocorrelate(signal, lag_times=16, normalization='default', 
-                  roi_labels=None, labeled_roi_mask=None):
+def autocorrelate(signal, lags_per_level = 16):
+                  
     """Autocorrelation of a signal using multi-tau method.
 
     For details, please refer to D. Magatti and F. Ferri doi:10.1364/ao.40.004011
     
     Parameters
     ----------
-    signal: array
-        input signal, corrlation is calulated along `0-axis`
-    lag_times: integer, optional
+    signal: 2-D array
+        input signal, autocorrlation is calulated along `0-axis`
+    lags_per_level: integer, optional
         number of lag-times per level, 16 is a as good number as any other
-    normalization: str, optional
-        default: :math: `\\frac { \langle f(t) f(t - \\tau) \\rangle }{ \langle f(t) \\rangle^2 }`
-        sutton: :math: `\\frac { \langle f(t) f(t - \\tau) \\rangle }{ \langle f(t) \\rangle \langle f(t - \\tau) \\rangle }`
-    labels: list
-        list of labels in the labled ROI array
-    labeled_roi_mask: array
-        array with ROI lables    
-
+    
     Returns:
     --------
     autocorrelations: numpy.ndarray
         should be self-explanatory
     lag-times: numpy.ndarray
         lag times in log2, corresponding to autocorrelation values     
-
-    TODO: add sanity checks
     """
     # if N is add subtract 1
     even = lambda x : x if x % 2 == 0 else x - 1
@@ -37,24 +28,18 @@ def autocorrelate(signal, lag_times=16, normalization='default',
     # 1-D data hack
     if len(signal.shape) == 1:
         signal = signal[:,np.newaxis, np.newaxis]
+    elif len(signal.shape) > 2:
+        raise ValueError('Flatten the [2,3,..] dimensions before passing to autocorrelate')
+
+    if signal.shape[0] < lags_per_level:
+        raise ValueError('Lag times per level must be greater than length of signal')
 
     #  sizes
     N = even(signal.shape[0])
-    m = lag_times
+    m = lags_per_level
 
-    # copy data a local array
-    a = np.array(signal[:N], copy=True)
-
-    # use mask if using ROIs
-    if roi_labels is not None:
-        a = a[:, labeled_roi_mask > 0]
-    else: 
-        # flattn the image
-        _, row, col = a.shape
-        a = a.reshape(N, row * col)
-
-    # transpose signal so that time is the fastest moving index
-    a = np.transpose(a)
+    # copy data a local array, and tranpos so that time is the fastest moving indexe
+    a = np.transpose(np.array(signal[:N], copy=True))
 
     # calculate levels
     levels = np.int_(np.log2(N/m)) + 1
@@ -68,10 +53,7 @@ def autocorrelate(signal, lag_times=16, normalization='default',
         tau[i] = i * delta_t
         t1 = np.mean(a[:,:N-i], axis=1) 
         t2 = np.mean(a[:,i:], axis=1) 
-        if normalization == 'default':
-            g2[i,:] = np.mean(a[:,:N-i] * a[:,i:], axis=1) /t1/t1
-        else:
-            g2[i,:] = np.mean(a[:,:N-i] * a[:,i:], axis=1) /t1/t2
+        g2[i,:] = np.mean(a[:,:N-i] * a[:,i:], axis=1) /t1/t2
     a  = (a[:,:N:2] + a[:,1:N:2])/2
     N  = even(N//2)
 
@@ -83,20 +65,9 @@ def autocorrelate(signal, lag_times=16, normalization='default',
             tau[idx] = tau[idx-1] + delta_t
             t1 = np.mean(a[:,:-shift], axis=1)
             t2 = np.mean(a[:,shift:], axis=1)
-            if normalization == 'default':
-                g2[idx,:] = np.mean(a[:,:-shift] * a[:,shift:], axis=1)/t1/t1
-            else:
-                g2[idx,:] = np.mean(a[:,:-shift] * a[:,shift:], axis=1)/t1/t2
+            g2[idx,:] = np.mean(a[:,:-shift] * a[:,shift:], axis=1)/t1/t2
         a  = (a[:,:N:2] + a[:,1:N:2])/2
         N = even(N//2)
-        if N < lag_times: break 
+        if N < lags_per_level: break 
 
-    G2 = []
-    if roi_labels is None:
-        G2.append(g2.mean(axis=1))
-    else:
-        for label in roi_labels:
-            mask = labeled_roi_mask > 0
-            idxs = labeled_roi_mask[mask] == label
-            G2.append(g2[:,idxs].mean(axis=1))
-    return G2, tau
+    return g2, tau
