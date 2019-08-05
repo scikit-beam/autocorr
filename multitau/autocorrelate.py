@@ -11,7 +11,7 @@ def autocorrelate(signal, lags_per_level = 16):
     Parameters
     ----------
     signal: 2-D array
-        input signal, autocorrlation is calulated along `0-axis`
+        input signal, autocorrlation is calulated along `1-axis`
     lags_per_level: integer, optional
         number of lag-times per level, 16 is a as good number as any other
     
@@ -27,25 +27,27 @@ def autocorrelate(signal, lags_per_level = 16):
 
     # 1-D data hack
     if len(signal.shape) == 1:
-        signal = signal[:,np.newaxis, np.newaxis]
+        N = even(signal.shape[0]) 
+        a = np.array(signal[np.newaxis,:N], copy=True)
+    elif len(signal.shape) == 2:
+        # copy data a local array
+        N = even(signal.shape[1])
+        a = np.array(signal[:,:N], copy=True)
     elif len(signal.shape) > 2:
-        raise ValueError('Flatten the [2,3,..] dimensions before passing to autocorrelate')
+        raise ValueError('Flatten the [2,3,..] dimensions before passing to autocorrelate.')
 
-    if signal.shape[0] < lags_per_level:
-        raise ValueError('Lag times per level must be greater than length of signal')
+    if N < lags_per_level:
+        raise ValueError('Lag times per level must be greater than length of signal.')
 
-    #  sizes
-    N = even(signal.shape[0])
+    #  shorthand for long names
     m = lags_per_level
 
-    # copy data a local array, and tranpos so that time is the fastest moving indexe
-    a = np.transpose(np.array(signal[:N], copy=True))
 
     # calculate levels
     levels = np.int_(np.log2(N/m)) + 1
-    dims = ((levels + 1) * (m //2), a.shape[0])
+    dims = (a.shape[0], (levels + 1) * (m //2))
     g2 = np.zeros(dims, dtype=np.float32)
-    tau = np.zeros(dims[0], dtype=np.float32)
+    tau = np.zeros(dims[1], dtype=np.float32)
 
     # zero level
     delta_t = 1
@@ -53,7 +55,7 @@ def autocorrelate(signal, lags_per_level = 16):
         tau[i] = i * delta_t
         t1 = np.mean(a[:,:N-i], axis=1) 
         t2 = np.mean(a[:,i:], axis=1) 
-        g2[i,:] = np.mean(a[:,:N-i] * a[:,i:], axis=1) /t1/t2
+        g2[:,i] = np.mean(a[:,:N-i] * a[:,i:], axis=1) /t1/t2
     a  = (a[:,:N:2] + a[:,1:N:2])/2
     N  = even(N//2)
 
@@ -65,7 +67,7 @@ def autocorrelate(signal, lags_per_level = 16):
             tau[idx] = tau[idx-1] + delta_t
             t1 = np.mean(a[:,:-shift], axis=1)
             t2 = np.mean(a[:,shift:], axis=1)
-            g2[idx,:] = np.mean(a[:,:-shift] * a[:,shift:], axis=1)/t1/t2
+            g2[:,idx] = np.mean(a[:,:-shift] * a[:,shift:], axis=1)/t1/t2
         a  = (a[:,:N:2] + a[:,1:N:2])/2
         N = even(N//2)
         if N < lags_per_level: break 

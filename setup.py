@@ -1,8 +1,10 @@
 import os
+import re
 import sys
 import subprocess
 from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext
+from multitau.__init__ import __version__
 
 class CMakeExtension(Extension):
     def __init__(self, name, sourcedir=''):
@@ -38,9 +40,17 @@ class CMakeBuild(build_ext):
         subprocess.check_call(['cmake', '--build', '.'] + build_args, cwd=self.build_temp) 
        
 
+def find_version():
+        with open('multitau/__init__.py', 'r') as version_file:
+            buf = version_file.read()
+            version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]", buf, re.M)
+            if version_match:
+                return version_match.group(1)
+            raise RuntimeError("Unable to find version string.")
+
 setup(
     name = 'multitau',
-    version = '0.1.0',
+    version = find_version(),
     description = 'Multi-tau autocorrelation for Synchroton data',
     author = 'Dinesh Kumar',
     author_email = 'dkumar@lbl.gov',
