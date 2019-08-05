@@ -26,4 +26,3 @@ g2 = G2[roi_mask,:].mean(axis=0)
 plt.semilogx(tau, g2)
 plt.show()
 ```
-```idx``` could be a mask for ROIs.
