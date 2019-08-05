@@ -4,7 +4,6 @@ import sys
 import subprocess
 from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext
-from multitau.__init__ import __version__
 
 class CMakeExtension(Extension):
     def __init__(self, name, sourcedir=''):
