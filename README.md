@@ -20,10 +20,9 @@ import matplotlib.pyplot as plt
 np.random.seed(0)
 signal = np.random.rand(1024, 25, 25)
 signal = signal.reshape(1024, 625)
-G2, tau = multitau.autocorrelate(signal, lags_per_level = 16)
+G2, tau = multitau.autocorrelate(signal.T, lags_per_level = 16)
 ...
-g2 = G2[:,idx].mean(axis=1)
+g2 = G2[roi_mask,:].mean(axis=0)
 plt.semilogx(tau, g2)
 plt.show()
 ```
-```idx``` could be a mask for ROIs.
