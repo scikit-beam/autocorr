@@ -3,42 +3,6 @@ import re
 import sys
 import subprocess
 from setuptools import setup, Extension
-from setuptools.command.build_ext import build_ext
-from multitau.__init__ import __version__
-
-class CMakeExtension(Extension):
-    def __init__(self, name, sourcedir=''):
-        Extension.__init__(self, name, sources=[])
-        self.sourcedir = os.path.abspath(sourcedir)
-
-class CMakeBuild(build_ext):
-    def run(self):
-        try:
-            out = subprocess.check_output(['cmake', '--version'])
-        except OSError:
-            raise RuntimeError('cmake is not installed. Install cmake and try again')
-
-        for ext in self.extensions:
-            self.build_extension(ext)
-
-    def build_extension(self, ext):
-        extdir = os.path.abspath(os.path.dirname(self.get_ext_fullpath(ext.name)))
-        cmake_args = ['-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=' + extdir,
-                      '-DPYTHON_EXECUTABLE=' + sys.executable]
-
-        cfg = 'Debug' if self.debug else 'Release'
-        build_args = ['--config', cfg]
-        cmake_args += ['-DCMAKE_BUILD_TYPE=' + cfg]
-        build_args += ['--', '-j2']
-
-        env = os.environ.copy()
-        env['CXXFLAGS'] = '{} -DVERSION_INFO=\\"{}\\"'.format(env.get('CXXFLAGS', ''),
-                                                              self.distribution.get_version())
-        if not os.path.exists(self.build_temp):
-            os.makedirs(self.build_temp)
-        subprocess.check_call(['cmake', ext.sourcedir] + cmake_args, cwd=self.build_temp, env=env)
-        subprocess.check_call(['cmake', '--build', '.'] + build_args, cwd=self.build_temp) 
-       
 
 def find_version():
         with open('multitau/__init__.py', 'r') as version_file:
@@ -48,6 +12,29 @@ def find_version():
                 return version_match.group(1)
             raise RuntimeError("Unable to find version string.")
 
+def get_headers():
+    try: 
+        import pybind11
+    except ImportError as e:
+        print('pybind11 is requred to build multi-threaded extension. Try installing it ..')
+        print('pip install pybind11')
+        raise e
+
+    major, minor, _ = pybind11.version_info
+    if major < 2 or minor < 3:
+        print('pybind11 version needs to be at least 2.3')
+        raise Exception('pybind11 upgrade needed')
+    return list(pybind11.get_include())
+
+ext = Extension('multitau.cMultitau',
+                sources = [
+                    'src/pyMultiTau.cpp',
+                    'src/cpu_multitau.cpp'
+                ],
+                extra_compile_args = [ '-std=c++11', '-fopenmp' ],
+                libraries = [ 'gomp' ],
+                include_dirs = get_headers()
+                )
 setup(
     name = 'multitau',
     version = find_version(),
@@ -57,7 +44,6 @@ setup(
     license = 'BSD',
     keywords = 'synchrotron xpcs',
     install_requires = [ 'pybind11' ],
-    ext_modules = [ CMakeExtension('multitau.cMultitau', 'src') ],
-    cmdclass = dict(build_ext = CMakeBuild),
+    ext_modules = [ ext ],
     packages = [ 'multitau' ]
 )
