@@ -41,6 +41,7 @@ void MultiTauAutocorrelator::run_level(unsigned ntaus) {
             unsigned row_id = j * ncols_;
             unsigned count = ntime_ - shift - tau;
             for (unsigned i = 0; i < count; i++) {
+
                 unsigned l = row_id + i;
                 unsigned r = l + shift + tau;
                 t1 += signal_[l] * signal_[r];
@@ -78,7 +79,7 @@ void MultiTauAutocorrelator::process(unsigned tpl, double dt) {
     while ( ntime_ >= tpl ) {
 
         dt *= 2;
-        for (int i = 0; i < tpl/2; i++)
+        for (unsigned i = 0; i < tpl/2; i++)
             tau_[idx_ + i] = tau_[idx_ + i -1] + dt;
 
         // each level not ZERO is run for half the lag-times
