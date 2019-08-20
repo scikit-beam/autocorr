@@ -24,16 +24,16 @@ def get_headers():
     if major < 2 or minor < 3:
         print('pybind11 version needs to be at least 2.3')
         raise Exception('pybind11 upgrade needed')
-    return list(pybind11.get_include())
+    return pybind11.get_include()
 
 ext = Extension('multitau.cMultitau',
                 sources = [
                     'src/pyMultiTau.cpp',
                     'src/cpu_multitau.cpp'
                 ],
+                include_dirs = [ get_headers() ],
                 extra_compile_args = [ '-std=c++11', '-fopenmp' ],
-                libraries = [ 'gomp' ],
-                include_dirs = get_headers()
+                libraries = [ 'gomp' ]
                 )
 setup(
     name = 'multitau',
