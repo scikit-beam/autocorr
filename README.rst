@@ -9,12 +9,7 @@ autocorr
         :target: https://pypi.python.org/pypi/autocorr
 
 
-Library for XPCS and image autocorrelation in general
-
-* Free software: 3-clause BSD license
-* Documentation: (COMING SOON!) https://scikit-beam.github.io/autocorr.
-
-Features
---------
-
-* TODO
+This library, still in very early development, aims to grow into a one-stop
+shop for all things XPCS. As it first step, it will be used to study and
+consolidate many existing implementations of g2 autocorrelation and related
+functions.

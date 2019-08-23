@@ -2,5 +2,4 @@
 Release History
 ===============
 
-Initial Release (YYYY-MM-DD)
-----------------------------
+This library has not yet been released on PyPI.
