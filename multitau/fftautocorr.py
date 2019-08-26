@@ -29,7 +29,7 @@ def fftautocorr(signal):
             'Flatten dimensions before passing to autocorrelate.')
     a = np.pad(a, ((0, 0), (0, N)), 'constant', constant_values=0)
 
-    # calculated autocorrelations for all the times
+    # calculate autocorrelations for all the lag-times
     ntimes = np.arange(N)
     g2 = np.fft.ifft(np.abs(np.fft.fft(a, axis=1))**2, axis=1).real
     g2 = g2[:,:N]  / np.arange(N,0,-1)
@@ -39,3 +39,4 @@ def fftautocorr(signal):
     ]).T
     
     return g2 / norm, ntimes
+
