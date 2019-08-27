@@ -8,8 +8,7 @@ python setup.py install
 ```
 ### Requirements
 1. numpy
-2. cmake
-3. pybind11
+2. pybind11
 
 ## Usage
 ```python
