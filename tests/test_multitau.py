@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import multitau
 import time
 
-N = 1024
+N = 10240
 np.random.seed(0)
 t = np.arange(N)
 A =  np.exp(-0.05 * t)[:,np.newaxis] + np.random.rand(N, 24) * 0.1
@@ -29,4 +29,4 @@ plt.semilogx(tau2, g2.mean(axis=0), '.', label='c')
 plt.semilogx(tau3, g3.mean(axis=0), '.', label='fft')
 plt.title('Autocorrelations')
 plt.legend()
-plt.show()
+plt.savefig('autocorr.png')
