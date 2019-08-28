@@ -4,7 +4,8 @@ Implementation of multi-tau algorithm for synchrotron XPCS data. For details ref
 ## Installation
 ```bash
 git clone https://github.com/aryabhatt/multitau.git
-python setup.py install
+cd multitau
+pip install .
 ```
 ### Requirements
 1. numpy
