@@ -18,14 +18,14 @@ def fftautocorr(signal):
 
     """
     # 1-D data hack
-    if len(signal.shape) == 1:
+    if signal.ndim == 1:
         N = signal.shape[0]
         a = signal[np.newaxis, :].copy()
-    elif len(signal.shape) == 2:
+    elif signal.ndim == 2:
         # copy data a local array
         n, N = signal.shape
         a = signal.copy()
-    elif len(signal.shape) > 2:
+    elif signal.ndim > 2:
         raise ValueError(
             'Flatten dimensions before passing to autocorrelate.')
     a = np.pad(a, ((0, 0), (0, N)), 'constant', constant_values=0)
