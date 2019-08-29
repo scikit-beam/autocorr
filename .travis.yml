@@ -1,6 +1,9 @@
 language: python
-python:
-  - 3.6
+matrix:
+  include:
+  - python: 3.6
+  - python: 3.7
+    env: PUBLISH_DOCS=true  # Publish the docs from just one build.
 cache:
   directories:
     - $HOME/.cache/pip
@@ -11,6 +14,7 @@ env:
     - secure: "i9MF5VQn6wNrxD7Ft0X08X/Iy+TtMPoiAblgEasJVnkTS08AyoNfst6T7RC1jkkYadzri17E7sjMQGXY6BvopwQMVoA6FwcbXU7nbKwig8Bf0XqomhEeUjtaYF0/iWNX2BUktFqvVShYFLcOblmFN1xFgYNle50WW5S7QZBg2EId+S7bqTBKMmJA8eOU7BgaaNeYYtnE7aavHa83TSYv7Uzqi46Sk/T3F0lIRE43C3j1MH7/HK9w/i/vmsukisNkc+iK7zKlVhl5VpdQn0/Y2RF5Q3mp5Ueu5Rf3ZMSjunkeX9m7YcxkMIkZj6zVNsWF10lxsNjFGmwh6HD/7H6+RmwOr3LOOWs316DRMJZI8BaCk6Bkng2yFhYqVEKMFk0F3UfpljWDUTDRVMIfBPSNKyaMqbZnA+ufxSlXF4yoJNt6J/eu92fbdeKiy0c3eoX6xo+yPXCNOLjnM6YXm5qcqC6j4ZY0rldZy1Ei0r46V2CeVQc3WY6hnCXk1XlT3Nox+EiWDL+IWUAx9B9O3eD09Zd9QjlieYExFIYIT4ojzhqcxCgEOqgt0rEVB8AL5XKu7soUw1HYonhduiUGqSsp7UVKsTwx7DkEcaM3KnF7//BdwrqE87bLyO+FPR2BBCWWmnEyRePJJLc0cbsukYQ968nP0UIHlPKDTCKkZ6vzzCs="
 
 install:
+  - pip install pybind11  # a build dependency
   # Install this package and the packages listed in requirements.txt.
   - pip install .
   # Install extra requirements for running tests and building docs.
@@ -23,16 +27,9 @@ script:
   - flake8  # Enforce code style (but relax line length limit a bit).
   - set -e
   - make -C docs html  # Build the documentation.
-  # Pubish the documentation to GitHub Pages.
-  - pip install doctr
-  - doctr deploy --built-docs docs/build/html .
-language: python
-python:
-    - "3.6"
-    - "3.7"
-install:
-    - pip install -r requirements.txt
-    - pip install .
-script:
-    - pytest
-
+  - |
+    if [ $PUBLISH_DOCS ]; then
+      # Pubish the documentation to GitHub Pages.
+      pip install doctr
+      doctr deploy --built-docs docs/build/html .
+    fi
