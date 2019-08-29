@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Installation &mdash; autocorr 0.post5+g2f711ff documentation</title>
+  <title>Installation &mdash; autocorr 0.post53+g5c6ad77 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.post5+g2f711ff
+                0.post53+g5c6ad77
               </div>
             
           
@@ -88,7 +88,11 @@
             
             
               <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#installation-using-pip">Installation Using Pip</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#development">Development</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="release-history.html">Release History</a></li>
 </ul>
@@ -157,12 +161,48 @@
             
   <div class="section" id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="installation-using-pip">
+<h2>Installation Using Pip<a class="headerlink" href="#installation-using-pip" title="Permalink to this headline">¶</a></h2>
 <p>This library has not yet been released on PyPI, so must be installed from
 source.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/scikit-beam/autocorr
 <span class="nb">cd</span> autocorr
+<span class="c1"># First install pybind11, a build-time dependency.</span>
+pip install pybind11
+<span class="c1"># Install the package and all its run-time dependencies.</span>
 pip install -e .
 </pre></div>
+</div>
+<p>You may also wish to install matplotlib. It is not a required dependency, but
+it is used in our examples for visualizing results.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install matplotlib
+</pre></div>
+</div>
+</div>
+<div class="section" id="development">
+<h2>Development<a class="headerlink" href="#development" title="Permalink to this headline">¶</a></h2>
+<p>For development, you will also want the dependencies for running the tests and
+building the documentation:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install -Ur requirements-dev.txt
+</pre></div>
+</div>
+<p>To run the tests:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pytest
+</pre></div>
+</div>
+<p>You should see output ending in “&lt;X&gt; passed in &lt;Y&gt; seconds”. For debugging,
+these optional arguments to <code class="docutils literal notranslate"><span class="pre">pytest</span></code> are commonly useful:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">-v</span></code> verbose</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-s</span></code> Do not capture stdout/err per test.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-k</span> <span class="pre">EXPRESSION</span></code> Filter tests by pattern-matching test name.</p></li>
+</ul>
+<p>To build this documentation on your local machine, run</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make -C docs html
+</pre></div>
+</div>
+<p>which will create a subdirectory of HTML files at <code class="docutils literal notranslate"><span class="pre">docs/build/html</span></code>. Open
+<code class="docutils literal notranslate"><span class="pre">docs/build/html/index.html</span></code> in your browser view the rendered documentation.</p>
 </div>
 </div>
 
