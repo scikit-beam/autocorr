@@ -41,12 +41,13 @@ try:
         if major < 2 or minor < 3:
             raise Exception('pybind11 needs to be upgraded to 2.3+')
         return pybind11.get_include()
- 
-    c_mulittau = Extension('autocorr.cMultitau',
-        sources = [ 'src/pyMultiTau.cpp', 'src/cpu_multitau.cpp' ],
-        include_dirs =  [ get_pybind11_headers() ],
-        extra_compile_args = [ '-std=c++11', '-fopenmp' ],
-        libraries = [ 'gomp' ]
+
+    c_mulittau = Extension(
+        'autocorr.cMultitau',
+        sources=['src/pyMultiTau.cpp', 'src/cpu_multitau.cpp'],
+        include_dirs=[get_pybind11_headers()],
+        extra_compile_args=['-std=c++11', '-fopenmp'],
+        libraries=['gomp']
     )
     extensions.append(c_mulittau)
 except ImportError:
@@ -54,7 +55,7 @@ except ImportError:
 except Exception as e:
     print(e)
     print('failed to build cMultitau extension')
-    
+
 setup(
     name='autocorr',
     version=versioneer.get_version(),
@@ -86,5 +87,5 @@ setup(
         'Natural Language :: English',
         'Programming Language :: Python :: 3',
     ],
-    ext_modules = extensions
+    ext_modules=extensions
 )
