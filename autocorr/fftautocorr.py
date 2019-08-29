@@ -9,7 +9,7 @@ def fftautocorr(signal):
     Parameters
     ----------
     signal: 2-D array
-        input signal, autocorrlation is calulated along `1-axis`
+        input signal, autocorrelation is calculated along `1-axis`
 
     Returns:
     --------

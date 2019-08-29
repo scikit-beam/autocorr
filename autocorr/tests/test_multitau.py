@@ -19,7 +19,7 @@ def test_multitau_mt():
     t0 = time.time()
     g1, tau1 = autocorr.multitau_mt(A.T, 16)
     t1 = time.time()
-    print('accelrated version = %f' % (t1 - t0))
+    print('accelerated version = %f' % (t1 - t0))
 
 
 def test_fftautocorr():
