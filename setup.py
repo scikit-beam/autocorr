@@ -4,6 +4,7 @@ import sys
 import versioneer
 
 
+min_pybind11_version = (2, 3)
 # NOTE: This file must remain Python 2 compatible for the foreseeable future,
 # to ensure that we error out properly for people with outdated setuptools
 # and/or pip.
@@ -39,7 +40,9 @@ try:
         import pybind11
         major, minor, _ = pybind11.version_info
         if major < 2 or minor < 3:
-            raise Exception('pybind11 needs to be upgraded to 2.3+')
+            raise Exception(
+                "autocorr requires pybind11 "
+                "{0}.{1} or higher".format(*min_pybind11_version))
         return pybind11.get_include()
 
     c_mulittau = Extension(
