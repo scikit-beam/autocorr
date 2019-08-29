@@ -13,3 +13,6 @@ This library, still in very early development, aims to grow into a one-stop
 shop for all things XPCS. As it first step, it will be used to study and
 consolidate many existing implementations of g2 autocorrelation and related
 functions.
+
+See the `documentation <https://scikit-beam.github.io/autocorr/>`_ for
+installation and usage instructions.

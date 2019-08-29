@@ -1,9 +1,10 @@
 from os import path
-from setuptools import setup, find_packages
+from setuptools import setup, find_packages, Extension
 import sys
 import versioneer
 
 
+min_pybind11_version = (2, 3)
 # NOTE: This file must remain Python 2 compatible for the foreseeable future,
 # to ensure that we error out properly for people with outdated setuptools
 # and/or pip.
@@ -32,6 +33,31 @@ with open(path.join(here, 'requirements.txt')) as requirements_file:
     requirements = [line for line in requirements_file.read().splitlines()
                     if not line.startswith('#')]
 
+extensions = []
+
+try:
+    def get_pybind11_headers():
+        import pybind11
+        major, minor, _ = pybind11.version_info
+        if major < 2 or minor < 3:
+            raise Exception(
+                "autocorr requires pybind11 "
+                "{0}.{1} or higher".format(*min_pybind11_version))
+        return pybind11.get_include()
+
+    c_mulittau = Extension(
+        'autocorr.cMultitau',
+        sources=['src/pyMultiTau.cpp', 'src/cpu_multitau.cpp'],
+        include_dirs=[get_pybind11_headers()],
+        extra_compile_args=['-std=c++11', '-fopenmp'],
+        libraries=['gomp']
+    )
+    extensions.append(c_mulittau)
+except ImportError:
+    print('failed to import pybind11.')
+except Exception as e:
+    print(e)
+    print('failed to build cMultitau extension')
 
 setup(
     name='autocorr',
@@ -64,4 +90,5 @@ setup(
         'Natural Language :: English',
         'Programming Language :: Python :: 3',
     ],
+    ext_modules=extensions
 )
