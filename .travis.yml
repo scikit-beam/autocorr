@@ -16,13 +16,13 @@ env:
 before_install:
   - sudo apt update
   - sudo apt install libfftw3-dev
+  - pip install -r requirements.txt
 
 install:
-  - pip install pybind11  # a build dependency
-  # Install this package and the packages listed in requirements.txt.
-  - pip install .
-  # Install extra requirements for running tests and building docs.
+  - python setup.py build_ext
+  - python setup.py install
   - pip install -r requirements-dev.txt
+   
 
 script:
   - coverage run -m pytest  # Run the tests and check for test coverage.
