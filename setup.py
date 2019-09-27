@@ -46,10 +46,11 @@ def get_pybind11_headers():
 
 c_mulittau = Extension(
     'autocorr.cAutocorr',
-    sources=['src/pyMultiTau.cpp', 'src/cpu_multitau.cpp',  'src/fftautocorr.cpp'],
+    sources=['src/pyMultiTau.cpp', 'src/cpu_multitau.cpp' ], #  'src/fftautocorr.cpp'],
     include_dirs=[get_pybind11_headers()],
     extra_compile_args=['-std=c++11', '-fopenmp'],
-    libraries=['fftw3_omp', 'm', 'gomp']
+    #libraries=['fftw3_omp', 'm', 'gomp']
+    libraries=['gomp']
 )
 extensions.append(c_mulittau)
 
