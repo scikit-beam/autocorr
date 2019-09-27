@@ -1,6 +1,6 @@
 
-#ifndef MULTI_TAU_CORRELATOR__H
-#define MULTI_TAU_CORRELATOR__H
+#ifndef CXX_AUTOCORR__H
+#define CXX_AUTOCORR__H
 
 class MultiTauAutocorrelator {
     private:
@@ -32,4 +32,9 @@ class MultiTauAutocorrelator {
         void process(unsigned m=16, double dt=1);
 };
 
-#endif // MULTI_TAU_CORRELATOR__H
+
+
+void FFTAutocorr(double *& , double *&, int , int );
+
+
+#endif // CXX_AUTOCORR__H

@@ -46,18 +46,18 @@ try:
         return pybind11.get_include()
 
     c_mulittau = Extension(
-        'autocorr.cMultitau',
-        sources=['src/pyMultiTau.cpp', 'src/cpu_multitau.cpp'],
+        'autocorr.cAutocorr',
+        sources=['src/pyMultiTau.cpp', 'src/cpu_multitau.cpp',  'src/fftautocorr.cpp'],
         include_dirs=[get_pybind11_headers()],
         extra_compile_args=['-std=c++11', '-fopenmp'],
-        libraries=['gomp']
+        libraries=['fftw3_omp', 'm', 'gomp']
     )
     extensions.append(c_mulittau)
 except ImportError:
     print('failed to import pybind11.')
 except Exception as e:
     print(e)
-    print('failed to build cMultitau extension')
+    print('failed to build cAutocorr extension')
 
 setup(
     name='autocorr',
