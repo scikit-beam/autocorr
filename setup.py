@@ -58,6 +58,7 @@ except ImportError:
 except Exception as e:
     print(e)
     print('failed to build cAutocorr extension')
+    raise e
 else:
     print('builing the cAutocorr extension module')
 setup(
