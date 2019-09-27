@@ -35,31 +35,24 @@ with open(path.join(here, 'requirements.txt')) as requirements_file:
 
 extensions = []
 
-try:
-    def get_pybind11_headers():
-        import pybind11
-        major, minor, _ = pybind11.version_info
-        if major < 2 or minor < 3:
-            raise Exception(
-                "autocorr requires pybind11 "
-                "{0}.{1} or higher".format(*min_pybind11_version))
-        return pybind11.get_include()
+def get_pybind11_headers():
+    import pybind11
+    major, minor, _ = pybind11.version_info
+    if major < 2 or minor < 3:
+        raise Exception(
+            "autocorr requires pybind11 "
+            "{0}.{1} or higher".format(*min_pybind11_version))
+    return pybind11.get_include()
 
-    c_mulittau = Extension(
-        'autocorr.cAutocorr',
-        sources=['src/pyMultiTau.cpp', 'src/cpu_multitau.cpp',  'src/fftautocorr.cpp'],
-        include_dirs=[get_pybind11_headers()],
-        extra_compile_args=['-std=c++11', '-fopenmp'],
-        libraries=['fftw3_omp', 'm', 'gomp']
-    )
-    extensions.append(c_mulittau)
-except ImportError:
-    print('failed to import pybind11.')
-except Exception as e:
-    print(e)
-    print('failed to build cAutocorr extension')
-else:
-    print('builing the cAutocorr extension module')
+c_mulittau = Extension(
+    'autocorr.cAutocorr',
+    sources=['src/pyMultiTau.cpp', 'src/cpu_multitau.cpp',  'src/fftautocorr.cpp'],
+    include_dirs=[get_pybind11_headers()],
+    extra_compile_args=['-std=c++11', '-fopenmp'],
+    libraries=['fftw3_omp', 'm', 'gomp']
+)
+extensions.append(c_mulittau)
+
 setup(
     name='autocorr',
     version=versioneer.get_version(),
