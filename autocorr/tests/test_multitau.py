@@ -28,6 +28,7 @@ def test_fftautocorr():
     t1 = time.time()
     print('fft version = %f' % (t1 - t0))
 
+
 def test_cfftautocorr():
     t0 = time.time()
     g2, tau = autocorr.fftautocorr_mt(A.T)
