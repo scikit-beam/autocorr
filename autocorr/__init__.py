@@ -4,7 +4,7 @@ from ._version import get_versions
 
 from .multitau import multitau
 from .fftautocorr import fftautocorr  # noqa
-from .cAutocorr import fftautocorr as fftautocorr_mt
+from .cAutocorr import fftautocorr as fftautocorr_mt  # noqa
 try:
     from .cAutocorr import multitau_mt
 except ImportError:
