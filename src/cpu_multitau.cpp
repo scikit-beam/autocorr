@@ -3,7 +3,7 @@
 #include <cstring>
 
 #include <iostream>
-#include "multitau.h"
+#include "autocorr.h"
 
 MultiTauAutocorrelator:: MultiTauAutocorrelator(double * data, unsigned row, unsigned col):
     nrows_(row), ncols_(col), ntime_(col), idx_(0), len_(0) {

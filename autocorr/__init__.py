@@ -4,8 +4,9 @@ from ._version import get_versions
 
 from .multitau import multitau
 from .fftautocorr import fftautocorr  # noqa
+from .cAutocorr import fftautocorr as fftautocorr_mt  # noqa
 try:
-    from .cMultitau import multitau_mt
+    from .cAutocorr import multitau_mt
 except ImportError:
     def multitau_mt(signal, lags_per_level=16):
         warnings.warn('multithreaded c-extension is missing.', ImportWarning)
