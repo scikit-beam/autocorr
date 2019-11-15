@@ -27,11 +27,11 @@ def multitau(signal, lags_per_level=16):
     # 1-D data hack
     if len(signal.shape) == 1:
         N = even(signal.shape[0])
-        a = np.array(signal[np.newaxis, :N], copy=True)
+        a = signal[np.newaxis, :N]
     elif len(signal.shape) == 2:
         # copy data a local array
         N = even(signal.shape[1])
-        a = np.array(signal[:, :N], copy=True)
+        a = signal[:, :N]
     elif len(signal.shape) > 2:
         raise ValueError('Flatten the [2,3,..] dimensions before passing to autocorrelate.')
 
