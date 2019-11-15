@@ -25,14 +25,14 @@ def multitau(signal, lags_per_level=16):
         return x if x % 2 == 0 else x - 1
 
     # 1-D data hack
-    if len(signal.shape) == 1:
+    if signal.ndim == 1:
         N = even(signal.shape[0])
         a = signal[np.newaxis, :N]
-    elif len(signal.shape) == 2:
+    elif signal.ndim == 2:
         # copy data a local array
         N = even(signal.shape[1])
         a = signal[:, :N]
-    elif len(signal.shape) > 2:
+    elif signal.ndim > 2:
         raise ValueError('Flatten the [2,3,..] dimensions before passing to autocorrelate.')
 
     if N < lags_per_level:
